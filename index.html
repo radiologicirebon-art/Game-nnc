@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numpang Ngopi CRB - Barista Rush</title>
+    <style>
+        :root {
+            --primary: #1d899b;
+            --accent: #f39c12;
+            --bg: #2c3e50;
+            --text: #ecf0f1;
+            --danger: #e74c3c;
+            --success: #27ae60;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #game-container {
+            background-color: #fff;
+            color: #333;
+            max-width: 400px;
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border: 4px solid var(--primary);
+            position: relative;
+        }
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            position: relative;
+        }
+        header h1 { margin: 0; font-size: 22px; }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #15626f;
+            padding: 10px;
+            font-weight: bold;
+        }
+        .btn-shop {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #customer-area {
+            padding: 20px;
+            background: #fdf6e3;
+            border-bottom: 2px dashed #ccc;
+        }
+        #timer-bar-container {
+            width: 100%; height: 10px; background: #ddd; border-radius: 5px; margin-top: 10px; overflow: hidden;
+        }
+        #timer-bar {
+            width: 100%; height: 100%; background: var(--success); transition: width 0.1s linear, background 0.3s;
+        }
+        #dialogue { font-style: italic; color: var(--danger); height: 20px; margin-top: 10px; font-weight: bold;}
+        
+        .ingredients {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px;
+        }
+        .btn-bahan {
+            background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.1s;
+        }
+        .btn-bahan:active { transform: scale(0.95); background-color: #15626f; }
+        
+        #mix-area { padding: 10px; font-weight: bold; color: var(--primary); min-height: 24px; }
+        
+        .btn-buat {
+            background-color: var(--accent); color: white; border: none; width: 90%; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 8px; margin-bottom: 20px; cursor: pointer;
+        }
+        .btn-buat:active { transform: scale(0.95); }
+
+        /* MODAL & OVERLAY STYLES */
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10;
+        }
+        .overlay h2 { color: white; }
+        .overlay button {
+            background: var(--accent); color: white; border: none; padding: 15px 30px;
+            font-size: 18px; border-radius: 8px; cursor: pointer; font-weight: bold;
+        }
+
+        #shop-modal { display: none; background: white; z-index: 5; }
+        .shop-item {
+            background: #ecf0f1; margin: 10px 20px; padding: 15px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .shop-item button {
+            background: var(--primary); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="start-screen" class="overlay">
+        <h2>Siap Buka Kedai?</h2>
+        <button onclick="startGame()">Mulai Shift! 🚀</button>
+    </div>
+
+    <div id="shop-modal" class="overlay">
+        <div style="background: white; width: 90%; border-radius: 10px; padding: 10px 0; color: #333;">
+            <h2>🛒 Toko Upgrade</h2>
+            <div class="shop-item">
+                <div style="text-align: left;">
+                    <strong>Mesin Espresso</strong><br>
+                    <small>Waktu +3 Detik</small>
+                </div>
+                <button id="btn-up-time" onclick="buyUpgrade('time')">Rp 50.000</button>
+            </div>
+            <div class="shop-item">
+                <div style="text-align: left;">
+                    <strong>Biji Kopi Premium</strong><br>
+                    <small>Harga Jual +Rp 5.000</small>
+                </div>
+                <button id="btn-up-price" onclick="buyUpgrade('price')">Rp 100.000</button>
+            </div>
+            <button style="margin-top: 15px; background: var(--danger);" onclick="closeShop()">Kembali Kerja</button>
+        </div>
+    </div>
+
+    <header>
+        <h1>☕ Numpang Ngopi CRB</h1>
+        <button class="btn-shop" onclick="openShop()">🛒 Shop</button>
+        <div class="stats">
+            <span id="score-display">💰 Rp 0</span>
+            <span id="rating-display">⭐ 5.0</span>
+        </div>
+    </header>
+
+    <div id="customer-area">
+        <h2 id="order-display" style="margin: 0;">Menunggu Customer...</h2>
+        <div id="timer-bar-container">
+            <div id="timer-bar"></div>
+        </div>
+        <div id="dialogue"></div>
+    </div>
+
+    <div id="mix-area">Gelas: <span id="current-mix">-</span></div>
+
+    <div class="ingredients">
+        <button class="btn-bahan" onclick="addIngredient('Kopi')">☕ Kopi</button>
+        <button class="btn-bahan" onclick="addIngredient('Susu')">🥛 Susu</button>
+        <button class="btn-bahan" onclick="addIngredient('Gula Aren')">🍯 Gula Aren</button>
+        <button class="btn-bahan" onclick="addIngredient('Coklat')">🍫 Coklat</button>
+        <button class="btn-bahan" onclick="addIngredient('Es')">🧊 Es Batu</button>
+        <button class="btn-bahan" style="background:var(--danger)" onclick="resetMix()">🗑️ Buang</button>
+    </div>
+
+    <button class="btn-buat" onclick="serveOrder()">Layanin! 🛎️</button>
+</div>
+
+<script>
+    // --- SISTEM AUDIO (Web Audio API) ---
+    let audioCtx;
+    function initAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(freq, type, duration, vol=0.1) {
+        if(!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function playBloop() { playTone(400, 'sine', 0.1, 0.1); } // Suara klik bahan
+    function playTing() { 
+        playTone(1200, 'sine', 0.1, 0.1); 
+        setTimeout(() => playTone(1600, 'sine', 0.3, 0.15), 100); 
+    } // Suara Uang/Sukses
+    function playError() { playTone(150, 'sawtooth', 0.4, 0.2); } // Suara Gagal
+
+    // --- DATABASE & STATE ---
+    const recipes = [
+        { name: "Kopi Aren", ingredients: ["Kopi", "Gula Aren", "Susu"] },
+        { name: "Mokachino", ingredients: ["Kopi", "Susu", "Coklat"] },
+        { name: "Es Kopi Susu", ingredients: ["Kopi", "Susu", "Es"] }
+    ];
+
+    let money = 0;
+    let rating = 5.0;
+    let currentOrder = null;
+    let currentMix = [];
+    let timeLeft = 0;
+    let timerInterval;
+    let isPaused = false;
+
+    // Upgrades
+    let baseTime = 15; // Detik
+    let extraPrice = 0; // Tambahan harga jual
+    let costTime = 50000;
+    let costPrice = 100000;
+
+    // --- ELEMENTS ---
+    const orderDisplay = document.getElementById('order-display');
+    const mixDisplay = document.getElementById('current-mix');
+    const scoreDisplay = document.getElementById('score-display');
+    const ratingDisplay = document.getElementById('rating-display');
+    const timerBar = document.getElementById('timer-bar');
+    const dialogue = document.getElementById('dialogue');
+
+    // --- LOGIC ---
+    function startGame() {
+        initAudio();
+        document.getElementById('start-screen').style.display = 'none';
+        startCustomer();
+    }
+
+    function startCustomer() {
+        if(isPaused) return;
+        currentOrder = recipes[Math.floor(Math.random() * recipes.length)];
+        orderDisplay.innerText = "🗣️ Pesen: " + currentOrder.name;
+        dialogue.innerText = "";
+        resetMix(false);
+
+        timeLeft = baseTime;
+        clearInterval(timerInterval);
+        timerBar.style.width = "100%";
+        timerBar.style.background = "var(--success)";
+
+        timerInterval = setInterval(() => {
+            if(isPaused) return;
+            timeLeft -= 0.1;
+            let percentage = (timeLeft / baseTime) * 100;
+            timerBar.style.width = percentage + "%";
+
+            if(percentage < 40) timerBar.style.background = "#f1c40f";
+            if(percentage < 15) timerBar.style.background = "var(--danger)";
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                failOrder("Kelamaan! Aku pergi aja! 😡");
+            }
+        }, 100);
+    }
+
+    function addIngredient(item) {
+        if(currentMix.length < 4 && !isPaused) {
+            playBloop();
+            currentMix.push(item);
+            updateMixDisplay();
+        }
+    }
+
+    function resetMix(playSfx = true) {
+        if(playSfx) playBloop();
+        currentMix = [];
+        updateMixDisplay();
+    }
+
+    function updateMixDisplay() {
+        mixDisplay.innerText = currentMix.length > 0 ? currentMix.join(" + ") : "-";
+    }
+
+    function serveOrder() {
+        if (!currentOrder || isPaused) return;
+        
+        let sortedMix = [...currentMix].sort().join();
+        let sortedRecipe = [...currentOrder.ingredients].sort().join();
+        clearInterval(timerInterval);
+
+        if (sortedMix === sortedRecipe) {
+            playTing();
+            let earn = 15000 + extraPrice;
+            money += earn;
+            rating = Math.min(5.0, rating + 0.1);
+            dialogue.style.color = "var(--success)";
+            dialogue.innerText = `Mantap! (+Rp ${(earn/1000)}k) 😍`;
+        } else {
+            failOrder("Ini mah bukan pesenanku woy! 😭");
+            return;
+        }
+
+        updateStats();
+        setTimeout(startCustomer, 1500);
+    }
+
+    function failOrder(msg) {
+        playError();
+        rating -= 0.5;
+        dialogue.style.color = "var(--danger)";
+        dialogue.innerText = msg;
+        updateStats();
+        
+        if (rating <= 0) {
+            alert("GAME OVER! Rating hancur. Mulai ulang hari!");
+            money = 0; rating = 5.0;
+            updateStats();
+        }
+        setTimeout(startCustomer, 2000);
+    }
+
+    function updateStats() {
+        scoreDisplay.innerText = `💰 Rp ${money.toLocaleString('id-ID')}`;
+        ratingDisplay.innerText = `⭐ ${rating.toFixed(1)}`;
+        document.getElementById('btn-up-time').innerText = `Rp ${costTime.toLocaleString('id-ID')}`;
+        document.getElementById('btn-up-price').innerText = `Rp ${costPrice.toLocaleString('id-ID')}`;
+    }
+
+    // --- SISTEM TOKO (UPGRADE) ---
+    function openShop() {
+        isPaused = true;
+        document.getElementById('shop-modal').style.display = 'flex';
+        updateStats();
+    }
+
+    function closeShop() {
+        document.getElementById('shop-modal').style.display = 'none';
+        isPaused = false;
+    }
+
+    function buyUpgrade(type) {
+        initAudio();
+        if(type === 'time' && money >= costTime) {
+            money -= costTime;
+            baseTime += 3;
+            costTime += 50000; // Harga naik
+            playTing();
+        } else if(type === 'price' && money >= costPrice) {
+            money -= costPrice;
+            extraPrice += 5000;
+            costPrice += 75000; // Harga naik
+            playTing();
+        } else {
+            playError();
+            alert("Uang tidak cukup!");
+        }
+        updateStats();
+    }
+</script>
+
+</body>
+</html>
