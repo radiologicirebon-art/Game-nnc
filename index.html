@@ -3,323 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Menu | Numpang Ngopi</title>
+    <title>Numpang Ngopi | Signature Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* TEMA HITAM PUTIH & LAYOUT ANDROID */
         :root {
-            --bg-color: #f5f5f5;
-            --app-bg: #ffffff;
-            --text-main: #000000;
-            --text-muted: #666666;
-            --border-color: #e0e0e0;
+            --bg: #0a0a0a;
+            --surface: #161616;
+            --primary: #ffffff;
+            --secondary: #888888;
+            --accent: #E2B07E; /* Warna emas kopi */
+            --border: #262626;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
             margin: 0;
             padding: 0;
-            /* Mencegah highlight biru saat di-tap di HP */
-            -webkit-tap-highlight-color: transparent; 
+            line-height: 1.6;
         }
 
-        /* Container ala Aplikasi Mobile */
-        #app-container {
-            max-width: 480px; /* Ukuran maksimal layar HP */
+        /* Container Layout */
+        .app-wrapper {
+            max-width: 500px;
             margin: 0 auto;
-            background-color: var(--app-bg);
             min-height: 100vh;
+            background: var(--bg);
             position: relative;
-            padding-bottom: 80px; /* Ruang untuk cart di bawah */
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
 
-        /* Header */
+        /* Hero Header */
         header {
-            background-color: var(--text-main);
-            color: var(--app-bg);
-            padding: 20px 15px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            padding: 40px 24px 20px 24px;
+            background: linear-gradient(to bottom, #1a1a1a, var(--bg));
         }
 
-        header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
-        header p { margin: 5px 0 0 0; font-size: 0.85rem; color: #ccc; }
-
-        /* Input Meja */
-        .table-input-container {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-            background: #fafafa;
+        .brand-logo {
+            font-weight: 800;
+            font-size: 24px;
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
         }
 
-        .table-input-container input {
+        .brand-tagline {
+            color: var(--secondary);
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        /* Table Input Section */
+        .table-section {
+            padding: 0 24px 20px 24px;
+        }
+
+        .input-group {
+            position: relative;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 15px;
             width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            border: 1px solid var(--text-main);
-            border-radius: 8px;
-            font-size: 1rem;
-            text-align: center;
+            outline: none;
+            font-family: inherit;
         }
 
-        /* List Menu */
-        .menu-list {
-            padding: 0;
-            margin: 0;
-            list-style: none;
+        /* Menu Grid */
+        .menu-container {
+            padding: 0 24px 120px 24px;
         }
 
-        .menu-item {
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 30px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .menu-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
         }
 
-        .menu-info {
-            flex: 1;
-            padding-right: 15px;
+        .menu-card:active {
+            transform: scale(0.98);
         }
 
-        .menu-name { font-weight: bold; font-size: 1.1rem; margin: 0 0 5px 0; color: var(--text-main); }
-        .menu-desc { font-size: 0.8rem; color: var(--text-muted); margin: 0 0 8px 0; line-height: 1.4; }
-        .menu-price { font-weight: 600; font-size: 0.95rem; }
+        .menu-info { flex: 1; }
 
-        /* Tombol Tambah/Kurang */
-        .qty-controls {
+        .menu-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0 0 4px 0;
+            color: var(--primary);
+        }
+
+        .menu-desc {
+            font-size: 12px;
+            color: var(--secondary);
+            margin: 0 0 12px 0;
+            max-width: 80%;
+        }
+
+        .menu-price {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 15px;
+        }
+
+        /* Controls */
+        .controls {
             display: flex;
             align-items: center;
-            gap: 12px;
+            background: var(--bg);
+            border-radius: 30px;
+            padding: 4px;
+            border: 1px solid var(--border);
         }
 
-        .btn-qty {
-            background-color: var(--app-bg);
-            color: var(--text-main);
-            border: 1px solid var(--text-main);
+        .btn-action {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            font-size: 1.2rem;
-            font-weight: bold;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 18px;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             cursor: pointer;
         }
 
-        .btn-qty:active { background-color: var(--text-main); color: var(--app-bg); }
-        
-        .qty-number {
-            font-weight: bold;
-            font-size: 1.1rem;
+        .btn-plus { background: var(--primary); color: var(--bg); }
+
+        .qty-label {
+            padding: 0 12px;
+            font-weight: 600;
             min-width: 20px;
             text-align: center;
         }
 
-        .loading, .error-msg {
-            text-align: center;
-            padding: 30px 15px;
-            color: var(--text-muted);
-        }
-
-        /* Bottom Cart Bar (Sticky) */
-        .cart-bar {
+        /* Floating Checkout Bar */
+        .floating-cart {
             position: fixed;
-            bottom: 0;
-            width: 100%;
-            max-width: 480px;
-            background-color: var(--text-main);
-            color: var(--app-bg);
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(150%);
+            width: calc(100% - 48px);
+            max-width: 452px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            box-sizing: border-box;
-            transform: translateY(100%);
-            transition: transform 0.3s ease-in-out;
-            z-index: 20;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
         }
 
-        .cart-bar.active {
-            transform: translateY(0);
+        .floating-cart.active {
+            transform: translateX(-50%) translateY(0);
         }
 
-        .cart-info div { font-size: 0.85rem; color: #ccc; }
-        .cart-total { font-weight: bold; font-size: 1.2rem; margin-top: 2px;}
+        .cart-text { color: #0a0a0a; }
+        .cart-total-label { font-size: 11px; text-transform: uppercase; font-weight: 600; opacity: 0.6; }
+        .cart-total-value { font-size: 18px; font-weight: 800; }
 
-        .btn-checkout {
-            background-color: var(--app-bg);
-            color: var(--text-main);
+        .btn-send {
+            background: #0a0a0a;
+            color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 1rem;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        }
+
+        /* Shimmer Loading */
+        .shimmer {
+            height: 100px;
+            background: var(--surface);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
         }
     </style>
 </head>
 <body>
 
-    <div id="app-container">
-        <header>
-            <h1>NUMPANG NGOPI</h1>
-            <p>Self-Service Order</p>
-        </header>
+<div class="app-wrapper">
+    <header>
+        <div class="brand-logo">Numpang Ngopi.</div>
+        <div class="brand-tagline">Signature Coffee & Brew Selection</div>
+    </header>
 
-        <div class="table-input-container">
-            <input type="text" id="nomorMeja" placeholder="Masukkan Nomor Meja (Cth: Meja 4)">
-        </div>
-
-        <div class="menu-list" id="menuList">
-            <div class="loading">Memuat menu...</div>
-        </div>
-
-        <div class="cart-bar" id="cartBar">
-            <div class="cart-info">
-                <div id="cartCount">0 Item</div>
-                <div class="cart-total" id="cartTotal">Rp0</div>
-            </div>
-            <button class="btn-checkout" onclick="kirimKeWA()">
-                Pesan ➔
-            </button>
+    <div class="table-section">
+        <div class="input-group">
+            <input type="text" id="noMeja" placeholder="Nomor Meja Anda...">
         </div>
     </div>
 
-    <script>
-        const FIREBASE_URL = "https://develop-kopi-default-rtdb.asia-southeast1.firebasedatabase.app/menu.json";
-        const WA_NUMBER = "628984290300"; // Format nomor WA harus pakai 62
+    <div class="menu-container">
+        <div class="section-title">Coffee Selection</div>
+        <div id="menuContent">
+            <div class="shimmer"></div>
+            <div class="shimmer"></div>
+            <div class="shimmer"></div>
+        </div>
+    </div>
+
+    <div class="floating-cart" id="cartBar">
+        <div class="cart-text">
+            <div class="cart-total-label" id="itemCount">0 Items Selected</div>
+            <div class="cart-total-value" id="totalPrice">Rp0</div>
+        </div>
+        <button class="btn-send" onclick="checkout()">Pesan Sekarang</button>
+    </div>
+</div>
+
+<script>
+    const DB_URL = "https://develop-kopi-default-rtdb.asia-southeast1.firebasedatabase.app/menu.json";
+    const WHATSAPP = "628984290300";
+    
+    let dbMenu = [];
+    let cart = {};
+
+    async function loadMenu() {
+        try {
+            const res = await fetch(DB_URL);
+            const data = await res.json();
+            dbMenu = data.filter(i => i !== null);
+            render();
+        } catch (e) {
+            document.getElementById('menuContent').innerHTML = "Gagal memuat menu.";
+        }
+    }
+
+    function updateQty(id, delta) {
+        if (!cart[id]) cart[id] = 0;
+        cart[id] += delta;
+        if (cart[id] <= 0) delete cart[id];
+        render();
+        updateUI();
+    }
+
+    function updateUI() {
+        let total = 0;
+        let count = 0;
+        for (let id in cart) {
+            let item = dbMenu.find(m => m.id == id);
+            total += (item.harga * cart[id]);
+            count += cart[id];
+        }
+
+        const bar = document.getElementById('cartBar');
+        document.getElementById('totalPrice').innerText = new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', minimumFractionDigits:0}).format(total);
+        document.getElementById('itemCount').innerText = `${count} Items Selected`;
+
+        if (count > 0) bar.classList.add('active');
+        else bar.classList.remove('active');
+    }
+
+    function render() {
+        const container = document.getElementById('menuContent');
+        container.innerHTML = dbMenu.map(item => `
+            <div class="menu-card">
+                <div class="menu-info">
+                    <h3 class="menu-name">${item.nama}</h3>
+                    <p class="menu-desc">${item.deskripsi}</p>
+                    <span class="menu-price">${new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', minimumFractionDigits:0}).format(item.harga)}</span>
+                </div>
+                <div class="controls">
+                    <button class="btn-action" onclick="updateQty(${item.id}, -1)">-</button>
+                    <span class="qty-label">${cart[item.id] || 0}</span>
+                    <button class="btn-action btn-plus" onclick="updateQty(${item.id}, 1)">+</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function checkout() {
+        const meja = document.getElementById('noMeja').value;
+        if (!meja) return alert("Isi nomor meja dulu ya bos.");
+
+        let text = `*PESANAN BARU - NUMPANG NGOPI*\n\n`;
+        text += `📍 *Meja:* ${meja}\n`;
+        text += `━━━━━━━━━━━━━━━\n`;
+
+        let total = 0;
+        for (let id in cart) {
+            let item = dbMenu.find(m => m.id == id);
+            let sub = item.harga * cart[id];
+            total += sub;
+            text += `• ${cart[id]}x ${item.nama}\n`;
+        }
+
+        text += `━━━━━━━━━━━━━━━\n`;
+        text += `*Total: ${new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', minimumFractionDigits:0}).format(total)}*`;
         
-        let menuData = [];
-        let keranjang = {}; // Format: { "1": 2 } artinya id 1 dipesan 2 buah
+        window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`);
+    }
 
-        const menuList = document.getElementById('menuList');
-        const cartBar = document.getElementById('cartBar');
-        const cartCount = document.getElementById('cartCount');
-        const cartTotal = document.getElementById('cartTotal');
+    loadMenu();
+</script>
 
-        const formatRupiah = (angka) => {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
-        };
-
-        // Render Menu ke Layar
-        const renderMenu = () => {
-            menuList.innerHTML = ''; 
-            
-            menuData.forEach(item => {
-                if(!item) return; 
-                
-                const qty = keranjang[item.id] || 0;
-
-                const card = document.createElement('div');
-                card.className = 'menu-item';
-                card.innerHTML = `
-                    <div class="menu-info">
-                        <h3 class="menu-name">${item.nama}</h3>
-                        <p class="menu-desc">${item.deskripsi}</p>
-                        <div class="menu-price">${formatRupiah(item.harga)}</div>
-                    </div>
-                    <div class="qty-controls">
-                        <button class="btn-qty" onclick="updateQty(${item.id}, -1)">-</button>
-                        <span class="qty-number" id="qty-${item.id}">${qty}</span>
-                        <button class="btn-qty" onclick="updateQty(${item.id}, 1)">+</button>
-                    </div>
-                `;
-                menuList.appendChild(card);
-            });
-        };
-
-        // Fungsi Tambah/Kurang Jumlah
-        window.updateQty = (id, perubahan) => {
-            if (!keranjang[id]) keranjang[id] = 0;
-            
-            keranjang[id] += perubahan;
-            
-            if (keranjang[id] <= 0) {
-                delete keranjang[id]; // Hapus dari keranjang jika 0
-                document.getElementById(`qty-${id}`).innerText = "0";
-            } else {
-                document.getElementById(`qty-${id}`).innerText = keranjang[id];
-            }
-            
-            updateCartBar();
-        };
-
-        // Update Total Harga & Tampilkan Bar Keranjang
-        const updateCartBar = () => {
-            let totalItem = 0;
-            let totalHarga = 0;
-
-            for (const id in keranjang) {
-                const item = menuData.find(m => m && m.id == id);
-                if (item) {
-                    totalItem += keranjang[id];
-                    totalHarga += (keranjang[id] * item.harga);
-                }
-            }
-
-            cartCount.innerText = `${totalItem} Item`;
-            cartTotal.innerText = formatRupiah(totalHarga);
-
-            // Munculkan bar di bawah jika ada pesanan
-            if (totalItem > 0) {
-                cartBar.classList.add('active');
-            } else {
-                cartBar.classList.remove('active');
-            }
-        };
-
-        // Fungsi Kirim ke WhatsApp
-        window.kirimKeWA = () => {
-            const noMeja = document.getElementById('nomorMeja').value;
-            
-            if (!noMeja.trim()) {
-                alert("Mohon isi Nomor Meja terlebih dahulu ya!");
-                document.getElementById('nomorMeja').focus();
-                return;
-            }
-
-            let textWA = `Halo *Numpang Ngopi*, saya mau pesan:\n\n`;
-            textWA += `📍 *Posisi: ${noMeja}*\n`;
-            textWA += `------------------------\n`;
-
-            let totalHarga = 0;
-
-            for (const id in keranjang) {
-                const item = menuData.find(m => m && m.id == id);
-                if (item) {
-                    const subTotal = keranjang[id] * item.harga;
-                    totalHarga += subTotal;
-                    textWA += `${keranjang[id]}x ${item.nama} - ${formatRupiah(subTotal)}\n`;
-                }
-            }
-
-            textWA += `------------------------\n`;
-            textWA += `*Total: ${formatRupiah(totalHarga)}*\n\n`;
-            textWA += `Terima kasih! Ditunggu ya kopinya ☕`;
-
-            // Buka WhatsApp (Bisa untuk HP maupun WA Web)
-            const waURL = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(textWA)}`;
-            window.open(waURL, '_blank');
-        };
-
-        // Mengambil data dari Firebase
-        fetch(FIREBASE_URL)
-            .then(res => res.json())
-            .then(data => {
-                menuData = data.filter(item => item !== null); 
-                renderMenu();
-            })
-            .catch(err => {
-                menuList.innerHTML = `<div class="error-msg">Gagal memuat menu. Cek koneksi internet.</div>`;
-            });
-    </script>
 </body>
 </html>
