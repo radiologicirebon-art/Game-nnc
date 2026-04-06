@@ -2,224 +2,324 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu | Numpang Ngopi. Crb</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Menu | Numpang Ngopi</title>
     <style>
+        /* TEMA HITAM PUTIH & LAYOUT ANDROID */
         :root {
-            --primary: #4A3022; /* Kopi pekat */
-            --secondary: #A07855; /* Warna susu/krim */
-            --accent: #D4A373;
-            --bg: #FAEDCD;
-            --text: #2C1E16;
+            --bg-color: #f5f5f5;
+            --app-bg: #ffffff;
+            --text-main: #000000;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
             margin: 0;
             padding: 0;
+            /* Mencegah highlight biru saat di-tap di HP */
+            -webkit-tap-highlight-color: transparent; 
         }
 
-        header {
-            background-color: var(--primary);
-            color: white;
-            text-align: center;
-            padding: 2rem 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        header h1 { margin: 0; font-size: 2.5rem; letter-spacing: 1px;}
-        header p { margin-top: 5px; color: var(--accent); }
-
-        .container {
-            max-width: 1000px;
+        /* Container ala Aplikasi Mobile */
+        #app-container {
+            max-width: 480px; /* Ukuran maksimal layar HP */
             margin: 0 auto;
-            padding: 2rem 1rem;
+            background-color: var(--app-bg);
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px; /* Ruang untuk cart di bawah */
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
 
-        /* Search Bar */
-        .search-container {
-            margin-bottom: 2rem;
+        /* Header */
+        header {
+            background-color: var(--text-main);
+            color: var(--app-bg);
+            padding: 20px 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+        header p { margin: 5px 0 0 0; font-size: 0.85rem; color: #ccc; }
+
+        /* Input Meja */
+        .table-input-container {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            background: #fafafa;
+        }
+
+        .table-input-container input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--text-main);
+            border-radius: 8px;
+            font-size: 1rem;
             text-align: center;
         }
-        
-        #searchInput {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px 20px;
-            border: 2px solid var(--secondary);
-            border-radius: 25px;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s;
+
+        /* List Menu */
+        .menu-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
         }
 
-        #searchInput:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(160, 120, 85, 0.4);
-        }
-
-        /* Menu Grid */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .menu-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
-            border-left: 5px solid var(--primary);
-        }
-
-        .menu-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-        }
-
-        .menu-header {
+        .menu-item {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .menu-name {
-            font-size: 1.25rem;
+        .menu-info {
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .menu-name { font-weight: bold; font-size: 1.1rem; margin: 0 0 5px 0; color: var(--text-main); }
+        .menu-desc { font-size: 0.8rem; color: var(--text-muted); margin: 0 0 8px 0; line-height: 1.4; }
+        .menu-price { font-weight: 600; font-size: 0.95rem; }
+
+        /* Tombol Tambah/Kurang */
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-qty {
+            background-color: var(--app-bg);
+            color: var(--text-main);
+            border: 1px solid var(--text-main);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.2rem;
             font-weight: bold;
-            color: var(--primary);
-            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
 
-        .menu-price {
+        .btn-qty:active { background-color: var(--text-main); color: var(--app-bg); }
+        
+        .qty-number {
+            font-weight: bold;
             font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--secondary);
-            background: #fdf5e6;
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
-
-        .menu-desc {
-            font-size: 0.9rem;
-            color: #666;
-            line-height: 1.5;
-            margin: 0;
+            min-width: 20px;
+            text-align: center;
         }
 
         .loading, .error-msg {
             text-align: center;
-            font-size: 1.2rem;
-            color: var(--primary);
-            grid-column: 1 / -1;
+            padding: 30px 15px;
+            color: var(--text-muted);
         }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            background-color: var(--primary);
-            color: var(--accent);
-            margin-top: 2rem;
+        /* Bottom Cart Bar (Sticky) */
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--text-main);
+            color: var(--app-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 20;
+        }
+
+        .cart-bar.active {
+            transform: translateY(0);
+        }
+
+        .cart-info div { font-size: 0.85rem; color: #ccc; }
+        .cart-total { font-weight: bold; font-size: 1.2rem; margin-top: 2px;}
+
+        .btn-checkout {
+            background-color: var(--app-bg);
+            color: var(--text-main);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Numpang Ngopi. Crb</h1>
-        <p>Buku Menu Interaktif</p>
-    </header>
+    <div id="app-container">
+        <header>
+            <h1>NUMPANG NGOPI</h1>
+            <p>Self-Service Order</p>
+        </header>
 
-    <div class="container">
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Cari minuman favoritmu (cth: Latte, Aren)...">
+        <div class="table-input-container">
+            <input type="text" id="nomorMeja" placeholder="Masukkan Nomor Meja (Cth: Meja 4)">
         </div>
 
-        <div class="menu-grid" id="menuGrid">
-            <div class="loading">Memuat menu dari Firebase...</div>
+        <div class="menu-list" id="menuList">
+            <div class="loading">Memuat menu...</div>
+        </div>
+
+        <div class="cart-bar" id="cartBar">
+            <div class="cart-info">
+                <div id="cartCount">0 Item</div>
+                <div class="cart-total" id="cartTotal">Rp0</div>
+            </div>
+            <button class="btn-checkout" onclick="kirimKeWA()">
+                Pesan ➔
+            </button>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Numpang Ngopi. Crb | Di-host di GitHub Pages</p>
-    </footer>
-
     <script>
-        // URL Realtime Database Kamu + /menu.json untuk mengambil datanya via REST API
         const FIREBASE_URL = "https://develop-kopi-default-rtdb.asia-southeast1.firebasedatabase.app/menu.json";
+        const WA_NUMBER = "628984290300"; // Format nomor WA harus pakai 62
         
         let menuData = [];
-        const menuGrid = document.getElementById('menuGrid');
-        const searchInput = document.getElementById('searchInput');
+        let keranjang = {}; // Format: { "1": 2 } artinya id 1 dipesan 2 buah
 
-        // Fungsi format Rupiah
+        const menuList = document.getElementById('menuList');
+        const cartBar = document.getElementById('cartBar');
+        const cartCount = document.getElementById('cartCount');
+        const cartTotal = document.getElementById('cartTotal');
+
         const formatRupiah = (angka) => {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0
-            }).format(angka);
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
         };
 
-        // Fungsi menampilkan menu ke HTML
-        const renderMenu = (data) => {
-            menuGrid.innerHTML = ''; // Bersihkan loading
+        // Render Menu ke Layar
+        const renderMenu = () => {
+            menuList.innerHTML = ''; 
             
-            if (data.length === 0) {
-                menuGrid.innerHTML = '<div class="error-msg">Minuman tidak ditemukan :(</div>';
+            menuData.forEach(item => {
+                if(!item) return; 
+                
+                const qty = keranjang[item.id] || 0;
+
+                const card = document.createElement('div');
+                card.className = 'menu-item';
+                card.innerHTML = `
+                    <div class="menu-info">
+                        <h3 class="menu-name">${item.nama}</h3>
+                        <p class="menu-desc">${item.deskripsi}</p>
+                        <div class="menu-price">${formatRupiah(item.harga)}</div>
+                    </div>
+                    <div class="qty-controls">
+                        <button class="btn-qty" onclick="updateQty(${item.id}, -1)">-</button>
+                        <span class="qty-number" id="qty-${item.id}">${qty}</span>
+                        <button class="btn-qty" onclick="updateQty(${item.id}, 1)">+</button>
+                    </div>
+                `;
+                menuList.appendChild(card);
+            });
+        };
+
+        // Fungsi Tambah/Kurang Jumlah
+        window.updateQty = (id, perubahan) => {
+            if (!keranjang[id]) keranjang[id] = 0;
+            
+            keranjang[id] += perubahan;
+            
+            if (keranjang[id] <= 0) {
+                delete keranjang[id]; // Hapus dari keranjang jika 0
+                document.getElementById(`qty-${id}`).innerText = "0";
+            } else {
+                document.getElementById(`qty-${id}`).innerText = keranjang[id];
+            }
+            
+            updateCartBar();
+        };
+
+        // Update Total Harga & Tampilkan Bar Keranjang
+        const updateCartBar = () => {
+            let totalItem = 0;
+            let totalHarga = 0;
+
+            for (const id in keranjang) {
+                const item = menuData.find(m => m && m.id == id);
+                if (item) {
+                    totalItem += keranjang[id];
+                    totalHarga += (keranjang[id] * item.harga);
+                }
+            }
+
+            cartCount.innerText = `${totalItem} Item`;
+            cartTotal.innerText = formatRupiah(totalHarga);
+
+            // Munculkan bar di bawah jika ada pesanan
+            if (totalItem > 0) {
+                cartBar.classList.add('active');
+            } else {
+                cartBar.classList.remove('active');
+            }
+        };
+
+        // Fungsi Kirim ke WhatsApp
+        window.kirimKeWA = () => {
+            const noMeja = document.getElementById('nomorMeja').value;
+            
+            if (!noMeja.trim()) {
+                alert("Mohon isi Nomor Meja terlebih dahulu ya!");
+                document.getElementById('nomorMeja').focus();
                 return;
             }
 
-            data.forEach(item => {
-                if(!item) return; // Skip array kosong dari Firebase (jika ada)
+            let textWA = `Halo *Numpang Ngopi*, saya mau pesan:\n\n`;
+            textWA += `📍 *Posisi: ${noMeja}*\n`;
+            textWA += `------------------------\n`;
 
-                const card = document.createElement('div');
-                card.className = 'menu-card';
-                card.innerHTML = `
-                    <div class="menu-header">
-                        <h3 class="menu-name">${item.nama}</h3>
-                        <span class="menu-price">${formatRupiah(item.harga)}</span>
-                    </div>
-                    <p class="menu-desc">${item.deskripsi}</p>
-                `;
-                menuGrid.appendChild(card);
-            });
+            let totalHarga = 0;
+
+            for (const id in keranjang) {
+                const item = menuData.find(m => m && m.id == id);
+                if (item) {
+                    const subTotal = keranjang[id] * item.harga;
+                    totalHarga += subTotal;
+                    textWA += `${keranjang[id]}x ${item.nama} - ${formatRupiah(subTotal)}\n`;
+                }
+            }
+
+            textWA += `------------------------\n`;
+            textWA += `*Total: ${formatRupiah(totalHarga)}*\n\n`;
+            textWA += `Terima kasih! Ditunggu ya kopinya ☕`;
+
+            // Buka WhatsApp (Bisa untuk HP maupun WA Web)
+            const waURL = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(textWA)}`;
+            window.open(waURL, '_blank');
         };
 
         // Mengambil data dari Firebase
         fetch(FIREBASE_URL)
-            .then(response => {
-                if (!response.ok) throw new Error('Gagal mengambil data Firebase');
-                return response.json();
-            })
+            .then(res => res.json())
             .then(data => {
-                // Filter nilai null/kosong jika ada (biasa terjadi di Firebase RTDB array)
                 menuData = data.filter(item => item !== null); 
-                renderMenu(menuData);
+                renderMenu();
             })
-            .catch(error => {
-                console.error('Error:', error);
-                menuGrid.innerHTML = `
-                    <div class="error-msg">
-                        <p>Gagal memuat dari Firebase. Pastikan Rules Database diset Publik.</p>
-                        <p>Silakan ikuti "Langkah 1" pada instruksi.</p>
-                    </div>`;
+            .catch(err => {
+                menuList.innerHTML = `<div class="error-msg">Gagal memuat menu. Cek koneksi internet.</div>`;
             });
-
-        // Fitur Pencarian Interaktif
-        searchInput.addEventListener('keyup', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filteredMenu = menuData.filter(item => 
-                item.nama.toLowerCase().includes(query) || 
-                item.deskripsi.toLowerCase().includes(query)
-            );
-            renderMenu(filteredMenu);
-        });
     </script>
 </body>
 </html>
